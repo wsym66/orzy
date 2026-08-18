@@ -7,18 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="app-container" id="appContainer">
-        
-        <!-- ==================== 顶部液态玻璃标 ==================== -->
         <div class="glass-top-bar">
             <div class="top-bar-title">orzyOS 1.0</div>
             <div class="top-bar-sub">轻量车机 高仿丰田</div>
         </div>
 
-        <!-- ==================== 中间交互区域 ==================== -->
         <div class="main-content" id="mainContent">
-            <!-- 核心圆圈 -->
             <div class="circle-button" id="circleBtn">
                 <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v12M8 13l4 4 4-4"/>
@@ -27,40 +22,26 @@
             </div>
         </div>
 
-        <!-- ==================== 底部液态毛玻璃导航栏 ==================== -->
-        <div class="glass-navbar">
-            
+        <div class="glass-navbar" id="glassNavbar">
+            <!-- 毛玻璃透镜 -->
+            <div class="glass-lens" id="glassLens"></div>
+
             <div class="nav-item active" id="navHome">
-                <div class="nav-icon">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
-                    </svg>
-                </div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg></div>
                 <span>首页</span>
             </div>
 
             <div class="nav-item" id="navDownload">
-                <div class="nav-icon">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                    </svg>
-                </div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
                 <span>下载</span>
             </div>
 
             <div class="nav-item" id="navTheme">
-                <div class="nav-icon">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
-                    </svg>
-                </div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></div>
                 <span id="themeLabel">深色</span>
             </div>
-
         </div>
-
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
