@@ -8,11 +8,13 @@
 </head>
 <body>
     <div class="app-container" id="appContainer">
+        <!-- 顶部 -->
         <div class="glass-top-bar">
             <div class="top-bar-title">orzyOS 1.0</div>
             <div class="top-bar-sub">轻量车机 高仿丰田</div>
         </div>
 
+        <!-- 中间展示区 -->
         <div class="main-content" id="mainContent">
             <div class="circle-button" id="circleBtn">
                 <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -22,8 +24,8 @@
             </div>
         </div>
 
+        <!-- 底部导航栏 -->
         <div class="glass-navbar" id="glassNavbar">
-            <!-- 毛玻璃透镜 -->
             <div class="glass-lens" id="glassLens"></div>
 
             <div class="nav-item active" id="navHome">
@@ -36,12 +38,56 @@
                 <span>下载</span>
             </div>
 
+            <div class="nav-item" id="navMessage">
+                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+                <span>消息</span>
+            </div>
+
             <div class="nav-item" id="navTheme">
                 <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></div>
                 <span id="themeLabel">深色</span>
             </div>
         </div>
     </div>
+
+    <!-- ====== 1. 消息主弹窗 ====== -->
+    <div class="modal-overlay" id="messageModal">
+        <div class="modal-glass modal-big">
+            <div class="modal-header">
+                <span>社区消息</span>
+                <button class="modal-close" id="closeMessageModal">✕</button>
+            </div>
+            <div class="message-list" id="messageList">
+                <div class="msg-item">欢迎来到 orzyOS 社区！</div>
+            </div>
+            <button class="fab-button" id="openInputModal">+</button>
+        </div>
+    </div>
+
+    <!-- ====== 2. 消息输入子窗口 ====== -->
+    <div class="modal-overlay" id="inputModal">
+        <div class="modal-glass modal-small">
+            <div class="modal-header">
+                <span>输入留言</span>
+            </div>
+            <textarea class="modal-input" id="msgInput" placeholder="说点什么吧..."></textarea>
+            <button class="check-button" id="confirmMsg">✓</button>
+        </div>
+    </div>
+
+    <!-- ====== 3. 下载弹窗（已改为列表显示） ====== -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-glass modal-download-list">
+            <div class="modal-header">
+                <span>软件更新</span>
+                <button class="modal-close" id="closeDownloadModal">✕</button>
+            </div>
+            <div class="download-list-container" id="downloadList">
+                <!-- 列表项由 JS 动态生成 -->
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

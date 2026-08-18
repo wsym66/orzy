@@ -5,7 +5,6 @@
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     --text-main: #1c1c1e;
     --text-sub: #8e8e93;
-    --active-bg: rgba(0, 122, 255, 0.15);
     --active-color: #007aff;
 }
 body.dark-mode {
@@ -15,10 +14,11 @@ body.dark-mode {
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     --text-main: #f2f2f7;
     --text-sub: #8e8e93;
-    --active-bg: rgba(10, 132, 255, 0.25);
     --active-color: #0a84ff;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+
+/* 页面主背景 */
 body {
     background-color: var(--bg-color);
     background-image: radial-gradient(circle at 0% 30%, #ffd1ff 0%, #ff9a9e 40%, #a1c4fd 100%);
@@ -30,8 +30,8 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 .app-container { width: 100%; max-width: 420px; height: 100vh; max-height: 900px; position: relative; display: flex; flex-direction: column; padding: 20px 20px 30px; overflow: hidden; }
 
 .glass-top-bar {
-    width: 100%; background: var(--glass-bg); backdrop-filter: blur(16px);
-    border-radius: 48px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
+    width: 100%; background: var(--glass-bg); backdrop-filter: blur(16px); border-radius: 48px;
+    border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
     padding: 20px 0; display: flex; flex-direction: column; align-items: center;
     margin-top: 20px; margin-bottom: 40px; color: var(--text-main);
 }
@@ -56,25 +56,22 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 .nav-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 8px 16px; border-radius: 24px; cursor: pointer; color: var(--text-sub);
-    transition: color 0.15s; min-width: 56px; user-select: none; position: relative; z-index: 2;
+    transition: color 0.15s; min-width: 50px; user-select: none; position: relative; z-index: 2;
 }
 .nav-item .nav-icon { line-height: 0; margin-bottom: 4px; }
 .nav-item span { font-size: 10px; font-weight: 500; }
 .nav-item.active { color: var(--active-color); }
 .nav-item.active svg { fill: var(--active-color); }
 
-/* 透镜 */
+/* 玻璃透镜（滑动放大用） */
 .glass-lens {
     position: absolute; top: 4px; bottom: 4px; width: 80px; border-radius: 48px;
     background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    pointer-events: none; z-index: 1; opacity: 0; transform: scale(0.8);
-    transition: opacity 0.15s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.6); pointer-events: none; z-index: 1;
+    opacity: 0; transform: scale(0.8); transition: opacity 0.15s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .glass-lens.active { opacity: 1; transform: scale(1); }
 .glass-lens.fly-anim { transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s, transform 0.2s; }
-
-/* 放大内容 */
 .lens-content {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -82,3 +79,63 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 }
 .lens-content svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 2px; }
 .lens-content span { font-size: 11px; font-weight: 600; }
+
+/* ======================== 弹窗系统 ======================== */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+    display: none; justify-content: center; align-items: center; z-index: 999;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-glass {
+    background: var(--glass-bg); backdrop-filter: blur(24px); border-radius: 32px;
+    border: 1px solid var(--glass-border); box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column; padding: 20px; position: relative; color: var(--text-main);
+    width: 85%; max-width: 350px;
+}
+.modal-big { height: 60vh; max-height: 500px; }
+.modal-small { height: 30vh; max-height: 280px; }
+
+/* 专门给下载列表的高度 */
+.modal-download-list { height: 50vh; max-height: 450px; }
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 18px; margin-bottom: 15px; }
+.modal-close {
+    background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; padding: 0 5px;
+}
+
+/* 消息列表 */
+.message-list { flex: 1; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
+.msg-item { background: rgba(255,255,255,0.2); padding: 12px 15px; border-radius: 20px; font-size: 14px; }
+
+/* 下载列表容器 */
+.download-list-container {
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 5px;
+}
+.download-item {
+    background: rgba(255,255,255,0.2); padding: 15px; border-radius: 16px; font-size: 15px; font-weight: 500;
+    text-align: center; color: var(--text-main);
+}
+
+/* 右下角加号 */
+.fab-button {
+    position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; border-radius: 50%;
+    background: var(--active-color); color: #fff; border: none; font-size: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    cursor: pointer; display: flex; justify-content: center; align-items: center;
+}
+.fab-button:active { transform: scale(0.9); }
+
+/* 输入框 */
+.modal-input {
+    width: 100%; flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); border-radius: 16px;
+    padding: 15px; color: var(--text-main); font-size: 16px; resize: none; outline: none; margin-bottom: 15px;
+}
+
+/* 右下角对号 */
+.check-button {
+    position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; border-radius: 50%;
+    background: var(--active-color); color: #fff; border: none; font-size: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    cursor: pointer; display: flex; justify-content: center; align-items: center;
+}
+.check-button:active { transform: scale(0.9); }

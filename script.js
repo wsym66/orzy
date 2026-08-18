@@ -1,33 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ================= 基础元素获取 =================
     const circleBtn = document.getElementById('circleBtn');
     const glassNavbar = document.getElementById('glassNavbar');
     const lens = document.getElementById('glassLens');
+    const body = document.body;
 
     const navHome = document.getElementById('navHome');
     const navDownload = document.getElementById('navDownload');
+    const navMessage = document.getElementById('navMessage');
     const navTheme = document.getElementById('navTheme');
     const themeLabel = document.getElementById('themeLabel');
-    const body = document.body;
-    const allNavItems = [navHome, navDownload, navTheme];
+    const allNavItems = [navHome, navDownload, navMessage, navTheme];
 
-    // ================= 1. 核心动作执行（防拦截） =================
+    // ================= 弹窗元素获取 =================
+    const messageModal = document.getElementById('messageModal');
+    const inputModal = document.getElementById('inputModal');
+    const downloadModal = document.getElementById('downloadModal');
+    const downloadList = document.getElementById('downloadList');
+    const messageList = document.getElementById('messageList');
+    const msgInput = document.getElementById('msgInput');
+    
+    // ================= 生成下载列表 =================
+    function generateDownloadList() {
+        downloadList.innerHTML = ''; // 清空原有内容
+        // 循环生成 4 个版本号（满足你要求的 "测试v0.0.0" 四遍）
+        for (let i = 0; i < 4; i++) {
+            const item = document.createElement('div');
+            item.className = 'download-item';
+            item.innerText = `测试v0.0.0`;
+            downloadList.appendChild(item);
+        }
+    }
+    // 页面加载时立刻生成
+    generateDownloadList();
+
+    // ================= 核心动作执行 =================
     const doAction = (target) => {
         if (!target) return;
-        // 高亮处理
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         target.classList.add('active');
 
+        // 业务分发
         if (target === navDownload) {
-            // 必跳转
-            window.location.href = 'https://www.bilibili.com';
+            // 弹出下载列表窗口
+            downloadModal.classList.add('active');
+        } else if (target === navMessage) {
+            messageModal.classList.add('active');
         } else if (target === navTheme) {
-            // 必换肤
             body.classList.toggle('dark-mode');
             themeLabel.innerText = body.classList.contains('dark-mode') ? '浅色' : '深色';
         }
     };
 
-    // ================= 2. 透镜逻辑：克隆内容与位置设定 =================
+    // ================= 透镜逻辑 =================
     const updateLensContent = (item) => {
         lens.innerHTML = '';
         if (!item) return;
@@ -36,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clone.classList.remove('nav-item', 'active');
         lens.appendChild(clone);
     };
-
     const updateLensPosition = (clientX) => {
         if (!lens.classList.contains('active')) return;
         const navRect = glassNavbar.getBoundingClientRect();
@@ -45,27 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
         lens.style.left = left + 'px';
         lens.style.top = '4px';
     };
-
     const getTargetFromCoords = (clientX, clientY) => {
         for (let item of allNavItems) {
             const rect = item.getBoundingClientRect();
-            if (clientX >= rect.left && clientX <= rect.right &&
-                clientY >= rect.top && clientY <= rect.bottom) {
-                return item;
-            }
+            if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) return item;
         }
         return null;
     };
 
-    // ================= 3. 彻底分开“点击”和“滑动”事件 =================
-
-    // 【A】点击事件：用户点一下，必定触发 0.5 秒飞行
+    // ================= 底部导航：点击飞行 =================
     allNavItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            // 如果正在滑动中，忽略点击
             if (isSwiping) return; 
-            
-            // 执行飞行动画
             updateLensContent(item);
             lens.classList.add('active');
             lens.classList.remove('fly-anim');
@@ -79,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
             lens.style.left = left + 'px';
             lens.style.top = '4px';
 
-            // 0.5秒后必定触发对应功能
             setTimeout(() => {
                 doAction(item);
                 lens.classList.remove('active', 'fly-anim');
@@ -88,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 【B】滑动事件：长按滑动，内容动态变化
+    // ================= 底部导航：滑动跟手 =================
     let isSwiping = false;
     let startTarget = null;
     let lastHoveredTarget = null;
@@ -98,11 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const touch = e.touches[0];
         startTarget = e.target.closest('.nav-item');
         if (!startTarget) return;
-
         isSwiping = false;
         lastHoveredTarget = startTarget;
-
-        // 250ms 判定为长按
         longPressTimer = setTimeout(() => {
             isSwiping = true;
             updateLensContent(startTarget);
@@ -116,8 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const touch = e.touches[0];
         const moveX = touch.clientX;
         const moveY = touch.clientY;
-
-        // 提前解锁滑动（如果手指在250ms内移动了）
         if (!isSwiping && (Math.abs(moveX - touch.clientX) > 10)) {
             clearTimeout(longPressTimer);
             isSwiping = true;
@@ -125,13 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
             lens.classList.add('active');
             lens.classList.remove('fly-anim');
         }
-
         if (isSwiping) {
             e.preventDefault();
             lens.classList.remove('fly-anim');
             updateLensPosition(moveX);
-
-            // ===== 核心修复：滑动时动态检测并切换放大内容 =====
             const currentHover = getTargetFromCoords(moveX, moveY);
             if (currentHover && currentHover !== lastHoveredTarget) {
                 lastHoveredTarget = currentHover;
@@ -142,28 +148,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
     glassNavbar.addEventListener('touchend', (e) => {
         clearTimeout(longPressTimer);
-
-        // 如果在滑动状态下松手
         if (isSwiping && lens.classList.contains('active')) {
             const lensRect = lens.getBoundingClientRect();
             const centerX = lensRect.left + lensRect.width / 2;
             const centerY = lensRect.top + lensRect.height / 2;
-
             const target = getTargetFromCoords(centerX, centerY);
-            if (target) {
-                doAction(target);
-            }
-
+            if (target) doAction(target);
             lens.classList.remove('active', 'fly-anim');
             setTimeout(() => { lens.innerHTML = ''; }, 300);
         }
-
-        isSwiping = false;
-        startTarget = null;
+        isSwiping = false; startTarget = null;
     }, { passive: true });
 
-    // ================= 4. 中间大圆圈点击跳转 =================
+    // ================= 中间圆圈：也打开下载列表 =================
     circleBtn.addEventListener('click', () => {
-        window.location.href = 'https://www.bilibili.com';
+        downloadModal.classList.add('active');
+    });
+
+    // ================= 消息弹窗交互 =================
+    // 1. 关闭消息主窗口
+    document.getElementById('closeMessageModal').addEventListener('click', () => {
+        messageModal.classList.remove('active');
+    });
+    // 点击背景关闭
+    messageModal.addEventListener('click', (e) => {
+        if (e.target === messageModal) messageModal.classList.remove('active');
+    });
+
+    // 2. 点击加号弹出输入子窗口
+    document.getElementById('openInputModal').addEventListener('click', () => {
+        inputModal.classList.add('active');
+        setTimeout(() => msgInput.focus(), 300); // 自动唤出键盘
+    });
+
+    // 3. 点击对号发表消息
+    document.getElementById('confirmMsg').addEventListener('click', () => {
+        const text = msgInput.value.trim();
+        if (text) {
+            const newMsg = document.createElement('div');
+            newMsg.className = 'msg-item';
+            newMsg.innerText = text;
+            messageList.appendChild(newMsg);
+            messageList.scrollTop = messageList.scrollHeight; // 滚动到底部
+            msgInput.value = ''; // 清空
+            inputModal.classList.remove('active'); // 关闭子窗口
+        }
+    });
+    // 支持回车键发送（部分虚拟键盘支持）
+    msgInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('confirmMsg').click();
+        }
+    });
+
+    // ================= 下载弹窗交互 =================
+    document.getElementById('closeDownloadModal').addEventListener('click', () => {
+        downloadModal.classList.remove('active');
+    });
+    downloadModal.addEventListener('click', (e) => {
+        if (e.target === downloadModal) downloadModal.classList.remove('active');
     });
 });
