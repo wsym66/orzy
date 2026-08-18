@@ -1,0 +1,154 @@
+:root {
+    /* 浅色主题 */
+    --bg-color: #f2f2f7;
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --text-main: #1c1c1e;
+    --text-sub: #8e8e93;
+    --active-bg: rgba(0, 122, 255, 0.15);
+    --active-color: #007aff;
+}
+
+/* 深色主题 */
+body.dark-mode {
+    --bg-color: #000000;
+    --glass-bg: rgba(44, 44, 46, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --text-main: #f2f2f7;
+    --text-sub: #8e8e93;
+    --active-bg: rgba(10, 132, 255, 0.25);
+    --active-color: #0a84ff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+
+body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at 0% 30%, #ffd1ff 0%, #ff9a9e 40%, #a1c4fd 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.3s, background-image 0.3s, color 0.3s;
+}
+body.dark-mode {
+    background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%, #000000 100%);
+}
+
+.app-container {
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    max-height: 900px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 30px;
+    overflow: hidden;
+}
+
+/* 顶部液态玻璃 */
+.glass-top-bar {
+    width: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 48px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    color: var(--text-main);
+}
+.top-bar-title { font-size: 24px; font-weight: 600; letter-spacing: 0.5px; }
+.top-bar-sub { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+
+/* 中间交互 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.circle-button {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), inset 0 2px 6px rgba(255,255,255,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.3s;
+    color: var(--text-main);
+    position: relative;
+    touch-action: none;
+}
+.circle-button:active { transform: scale(0.92); }
+.circle-button.dragging {
+    opacity: 0.85;
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(0, 122, 255, 0.25);
+    cursor: grabbing;
+}
+.circle-button svg { transition: stroke 0.3s; }
+
+/* 底部导航 */
+.glass-navbar {
+    width: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 48px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    padding: 14px 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 24px;
+    cursor: pointer;
+    color: var(--text-sub);
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+    min-width: 56px;
+}
+.nav-item .nav-icon { line-height: 0; margin-bottom: 4px; }
+.nav-item span { font-size: 10px; font-weight: 500; }
+
+.nav-item.active {
+    background: var(--active-bg);
+    color: var(--active-color);
+}
+.nav-item.active svg { fill: var(--active-color); }
+
+.nav-item:active { transform: scale(0.88); }
+.nav-item.drag-hover {
+    background: var(--active-bg);
+    color: var(--active-color);
+    transform: scale(1.1);
+}
+.nav-item.drag-hover svg { fill: var(--active-color); }
