@@ -1,26 +1,28 @@
 :root {
-    --bg-color: #f2f2f7;
-    --glass-bg: rgba(255, 255, 255, 0.45);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    /* 极致玻璃质感（浅色） */
+    --bg-color: #f2f5fc;
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
     --text-main: #1c1c1e;
     --text-sub: #8e8e93;
     --active-color: #007aff;
 }
 body.dark-mode {
+    /* 极致玻璃质感（深色） */
     --bg-color: #000000;
-    --glass-bg: rgba(44, 44, 46, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --glass-bg: rgba(40, 40, 46, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     --text-main: #f2f2f7;
     --text-sub: #8e8e93;
     --active-color: #0a84ff;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
 
-/* 页面主背景 */
 body {
     background-color: var(--bg-color);
+    /* iOS 26 经典的粉蓝渐变背景 */
     background-image: radial-gradient(circle at 0% 30%, #ffd1ff 0%, #ff9a9e 40%, #a1c4fd 100%);
     background-attachment: fixed; display: flex; justify-content: center; align-items: center; min-height: 100vh;
     transition: background 0.4s;
@@ -29,18 +31,26 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 
 .app-container { width: 100%; max-width: 420px; height: 100vh; max-height: 900px; position: relative; display: flex; flex-direction: column; padding: 20px 20px 30px; overflow: hidden; }
 
+/* 所有玻璃元素统一设定 */
+.glass-top-bar, .glass-navbar, .modal-glass, .glass-lens {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    color: var(--text-main);
+}
+
 .glass-top-bar {
-    width: 100%; background: var(--glass-bg); backdrop-filter: blur(16px); border-radius: 48px;
-    border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
-    padding: 20px 0; display: flex; flex-direction: column; align-items: center;
-    margin-top: 20px; margin-bottom: 40px; color: var(--text-main);
+    border-radius: 48px; padding: 20px 0; display: flex; flex-direction: column; align-items: center;
+    margin-top: 20px; margin-bottom: 40px;
 }
 .top-bar-title { font-size: 24px; font-weight: 600; }
 .top-bar-sub { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
 
 .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .circle-button {
-    width: 150px; height: 150px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(20px);
+    width: 150px; height: 150px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(24px);
     border: 1px solid var(--glass-border); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     display: flex; justify-content: center; align-items: center; color: var(--text-main);
     cursor: pointer; transition: transform 0.1s;
@@ -48,10 +58,7 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 .circle-button:active { transform: scale(0.92); }
 
 .glass-navbar {
-    width: 100%; position: relative; background: var(--glass-bg); backdrop-filter: blur(20px);
-    border-radius: 48px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
-    padding: 14px 15px; display: flex; justify-content: space-around; align-items: center;
-    touch-action: none;
+    width: 100%; position: relative; border-radius: 48px; padding: 12px 15px; display: flex; justify-content: space-around; align-items: center; touch-action: none;
 }
 .nav-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -63,12 +70,10 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 .nav-item.active { color: var(--active-color); }
 .nav-item.active svg { fill: var(--active-color); }
 
-/* 玻璃透镜（滑动放大用） */
 .glass-lens {
     position: absolute; top: 4px; bottom: 4px; width: 80px; border-radius: 48px;
-    background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.6); pointer-events: none; z-index: 1;
-    opacity: 0; transform: scale(0.8); transition: opacity 0.15s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none; z-index: 1; opacity: 0; transform: scale(0.8);
+    transition: opacity 0.15s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .glass-lens.active { opacity: 1; transform: scale(1); }
 .glass-lens.fly-anim { transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s, transform 0.2s; }
@@ -80,62 +85,50 @@ body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%
 .lens-content svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 2px; }
 .lens-content span { font-size: 11px; font-weight: 600; }
 
-/* ======================== 弹窗系统 ======================== */
+/* ================= 弹窗系统与放大动画 ================= */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(6px);
     display: none; justify-content: center; align-items: center; z-index: 999;
 }
 .modal-overlay.active { display: flex; }
 
+/* 放大弹出动画 */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
 .modal-glass {
-    background: var(--glass-bg); backdrop-filter: blur(24px); border-radius: 32px;
-    border: 1px solid var(--glass-border); box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    display: flex; flex-direction: column; padding: 20px; position: relative; color: var(--text-main);
-    width: 85%; max-width: 350px;
+    border-radius: 32px; display: flex; flex-direction: column; padding: 20px;
+    position: relative; color: var(--text-main); width: 85%; max-width: 350px;
+    transform: scale(0); opacity: 0; /* 默认状态 */
+}
+/* 当父级 active 时触发动画 */
+.modal-overlay.active .modal-glass {
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 .modal-big { height: 60vh; max-height: 500px; }
 .modal-small { height: 30vh; max-height: 280px; }
-
-/* 专门给下载列表的高度 */
 .modal-download-list { height: 50vh; max-height: 450px; }
 
 .modal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 18px; margin-bottom: 15px; }
-.modal-close {
-    background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; padding: 0 5px;
-}
+.modal-close { background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; padding: 0 5px; }
 
-/* 消息列表 */
+/* 消息气泡与列表 */
 .message-list { flex: 1; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
-.msg-item { background: rgba(255,255,255,0.2); padding: 12px 15px; border-radius: 20px; font-size: 14px; }
+.msg-item { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 12px 15px; border-radius: 20px; font-size: 14px; }
+.download-list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 5px; }
+.download-item { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 15px; border-radius: 16px; font-size: 15px; font-weight: 500; text-align: center; color: var(--text-main); }
 
-/* 下载列表容器 */
-.download-list-container {
-    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 5px;
-}
-.download-item {
-    background: rgba(255,255,255,0.2); padding: 15px; border-radius: 16px; font-size: 15px; font-weight: 500;
-    text-align: center; color: var(--text-main);
-}
-
-/* 右下角加号 */
-.fab-button {
+/* 按钮 */
+.fab-button, .check-button {
     position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; border-radius: 50%;
-    background: var(--active-color); color: #fff; border: none; font-size: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    cursor: pointer; display: flex; justify-content: center; align-items: center;
+    background: var(--active-color); color: #fff; border: 1px solid rgba(255,255,255,0.5); font-size: 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15); cursor: pointer; display: flex; justify-content: center; align-items: center;
 }
-.fab-button:active { transform: scale(0.9); }
+.fab-button:active, .check-button:active { transform: scale(0.9); }
 
-/* 输入框 */
 .modal-input {
-    width: 100%; flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); border-radius: 16px;
-    padding: 15px; color: var(--text-main); font-size: 16px; resize: none; outline: none; margin-bottom: 15px;
+    width: 100%; flex: 1; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 15px; color: var(--text-main); font-size: 16px; resize: none; outline: none; margin-bottom: 15px;
 }
-
-/* 右下角对号 */
-.check-button {
-    position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; border-radius: 50%;
-    background: var(--active-color); color: #fff; border: none; font-size: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    cursor: pointer; display: flex; justify-content: center; align-items: center;
-}
-.check-button:active { transform: scale(0.9); }

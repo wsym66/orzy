@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ================= 基础元素获取 =================
     const circleBtn = document.getElementById('circleBtn');
     const glassNavbar = document.getElementById('glassNavbar');
     const lens = document.getElementById('glassLens');
@@ -12,18 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeLabel = document.getElementById('themeLabel');
     const allNavItems = [navHome, navDownload, navMessage, navTheme];
 
-    // ================= 弹窗元素获取 =================
     const messageModal = document.getElementById('messageModal');
     const inputModal = document.getElementById('inputModal');
     const downloadModal = document.getElementById('downloadModal');
     const downloadList = document.getElementById('downloadList');
     const messageList = document.getElementById('messageList');
     const msgInput = document.getElementById('msgInput');
-    
-    // ================= 生成下载列表 =================
+
+    // 生成下载列表
     function generateDownloadList() {
-        downloadList.innerHTML = ''; // 清空原有内容
-        // 循环生成 4 个版本号（满足你要求的 "测试v0.0.0" 四遍）
+        downloadList.innerHTML = '';
         for (let i = 0; i < 4; i++) {
             const item = document.createElement('div');
             item.className = 'download-item';
@@ -31,28 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadList.appendChild(item);
         }
     }
-    // 页面加载时立刻生成
     generateDownloadList();
 
-    // ================= 核心动作执行 =================
+    // 核心动作
     const doAction = (target) => {
         if (!target) return;
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         target.classList.add('active');
-
-        // 业务分发
-        if (target === navDownload) {
-            // 弹出下载列表窗口
-            downloadModal.classList.add('active');
-        } else if (target === navMessage) {
-            messageModal.classList.add('active');
-        } else if (target === navTheme) {
+        if (target === navDownload) downloadModal.classList.add('active');
+        else if (target === navMessage) messageModal.classList.add('active');
+        else if (target === navTheme) {
             body.classList.toggle('dark-mode');
             themeLabel.innerText = body.classList.contains('dark-mode') ? '浅色' : '深色';
         }
     };
 
-    // ================= 透镜逻辑 =================
+    // 透镜逻辑 (点击/滑动)
     const updateLensContent = (item) => {
         lens.innerHTML = '';
         if (!item) return;
@@ -77,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     };
 
-    // ================= 底部导航：点击飞行 =================
+    // 点击飞行
     allNavItems.forEach(item => {
         item.addEventListener('click', (e) => {
             if (isSwiping) return; 
@@ -102,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ================= 底部导航：滑动跟手 =================
+    // 滑动跟手
     let isSwiping = false;
     let startTarget = null;
     let lastHoveredTarget = null;
@@ -160,28 +151,24 @@ document.addEventListener('DOMContentLoaded', () => {
         isSwiping = false; startTarget = null;
     }, { passive: true });
 
-    // ================= 中间圆圈：也打开下载列表 =================
-    circleBtn.addEventListener('click', () => {
-        downloadModal.classList.add('active');
+    // 中间圆圈：下载列表
+    circleBtn.addEventListener('click', () => downloadModal.classList.add('active'));
+
+    // ================= 弹窗交互 =================
+    const closeModal = (modal) => modal.classList.remove('active');
+
+    document.getElementById('closeMessageModal').addEventListener('click', () => closeModal(messageModal));
+    document.getElementById('closeDownloadModal').addEventListener('click', () => closeModal(downloadModal));
+
+    [messageModal, downloadModal, inputModal].forEach(modal => {
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
     });
 
-    // ================= 消息弹窗交互 =================
-    // 1. 关闭消息主窗口
-    document.getElementById('closeMessageModal').addEventListener('click', () => {
-        messageModal.classList.remove('active');
-    });
-    // 点击背景关闭
-    messageModal.addEventListener('click', (e) => {
-        if (e.target === messageModal) messageModal.classList.remove('active');
-    });
-
-    // 2. 点击加号弹出输入子窗口
     document.getElementById('openInputModal').addEventListener('click', () => {
         inputModal.classList.add('active');
-        setTimeout(() => msgInput.focus(), 300); // 自动唤出键盘
+        setTimeout(() => msgInput.focus(), 300);
     });
 
-    // 3. 点击对号发表消息
     document.getElementById('confirmMsg').addEventListener('click', () => {
         const text = msgInput.value.trim();
         if (text) {
@@ -189,24 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
             newMsg.className = 'msg-item';
             newMsg.innerText = text;
             messageList.appendChild(newMsg);
-            messageList.scrollTop = messageList.scrollHeight; // 滚动到底部
-            msgInput.value = ''; // 清空
-            inputModal.classList.remove('active'); // 关闭子窗口
+            messageList.scrollTop = messageList.scrollHeight;
+            msgInput.value = '';
+            closeModal(inputModal);
         }
     });
-    // 支持回车键发送（部分虚拟键盘支持）
     msgInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             document.getElementById('confirmMsg').click();
         }
-    });
-
-    // ================= 下载弹窗交互 =================
-    document.getElementById('closeDownloadModal').addEventListener('click', () => {
-        downloadModal.classList.remove('active');
-    });
-    downloadModal.addEventListener('click', (e) => {
-        if (e.target === downloadModal) downloadModal.classList.remove('active');
     });
 });
