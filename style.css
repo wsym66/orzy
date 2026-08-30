@@ -1,112 +1,89 @@
-:root {
-    --bg-color: #f2f5fc;
-    --glass-bg: rgba(255, 255, 255, 0.12);
-    --glass-border: rgba(255, 255, 255, 0.7);
-    --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-    --text-main: #1c1c1e;
-    --text-sub: #8e8e93;
-    --active-color: #007aff;
-}
-body.dark-mode {
-    --bg-color: #000000;
-    --glass-bg: rgba(44, 44, 46, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-    --text-main: #f2f2f7;
-    --text-sub: #8e8e93;
-    --active-color: #0a84ff;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-body {
-    background-color: var(--bg-color);
-    background-image: radial-gradient(circle at 0% 30%, #ffd1ff 0%, #ff9a9e 40%, #a1c4fd 100%);
-    background-attachment: fixed; display: flex; justify-content: center; align-items: center; min-height: 100vh;
-    transition: background 0.4s;
-}
-body.dark-mode { background-image: radial-gradient(circle at 10% 20%, #1c1c1e 0%, #000000 100%); }
-.app-container { width: 100%; max-width: 420px; height: 100vh; max-height: 900px; position: relative; display: flex; flex-direction: column; padding: 20px 20px 30px; overflow: hidden; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { width: 100vw; height: 100vh; overflow: hidden; background: #000; }
 
-.glass-top-bar, .glass-navbar, .modal-glass, .msg-item, .download-item {
-    background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); color: var(--text-main);
-}
-.glass-top-bar { border-radius: 48px; padding: 20px 0; display: flex; flex-direction: column; align-items: center; margin-top: 20px; margin-bottom: 40px; }
-.top-bar-title { font-size: 24px; font-weight: 600; }
-.top-bar-sub { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+#boot-screen { position: absolute; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; }
+.boot-loader { width: 50px; height: 50px; border: 4px solid #0078d7; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.boot-text { color: #fff; margin-top: 20px; }
 
-.main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.circle-button {
-    width: 150px; height: 150px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(24px);
-    border: 1px solid var(--glass-border); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-    display: flex; justify-content: center; align-items: center; color: var(--text-main);
-    cursor: pointer; transition: transform 0.1s;
-}
-.circle-button:active { transform: scale(0.92); }
+#desktop { width: 100%; height: 100%; display: none; background: radial-gradient(circle at center, #0078d7 0%, #001f4d 100%); position: relative; transition: background 0.5s; }
+#icon-area { position: absolute; top: 0; left: 0; right: 0; bottom: 60px; padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; align-content: flex-start; overflow-y: auto; z-index: 10; }
 
-.glass-navbar {
-    width: 100%; position: relative; border-radius: 60px; padding: 10px 12px; display: flex; justify-content: space-around; align-items: center; touch-action: none;
-}
-.nav-item {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 10px;
-    border-radius: 24px; cursor: pointer; color: var(--text-sub); transition: color 0.15s; min-width: 48px; 
-    user-select: none; position: relative; z-index: 2;
-}
-.nav-item .nav-icon { line-height: 0; margin-bottom: 4px; }
-.nav-item span { font-size: 10px; font-weight: 500; }
-.nav-item.active { color: var(--active-color); }
-.nav-item.active svg { fill: var(--active-color); }
+.app-icon { width: 90px; text-align: center; color: white; cursor: pointer; margin-bottom: 20px; }
+.app-icon-ico { width: 65px; height: 65px; background: #000; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; margin: 0 auto 8px; }
 
-/* ================= 真正的凸透镜放大镜（光学级玻璃） ================= */
-.glass-lens {
-    position: absolute; top: 4px; bottom: 4px; width: 76px; border-radius: 40px;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.05) 70%);
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    border: 1.5px solid rgba(255, 255, 255, 0.8);
-    box-shadow: inset 0 2px 8px rgba(255,255,255,0.9), 0 4px 12px rgba(0,0,0,0.02);
-    pointer-events: none; z-index: 1;
-    opacity: 1; transform: scale(1);
-    transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+/* 底部任务栏：动态显示当前打开的窗口 */
+#taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: flex-start; padding: 0 10px; z-index: 100; overflow-x: auto; }
+.task-btn { font-size: 26px; cursor: pointer; margin: 0 10px; color: white; }
+.home-btn { fill: #fff; margin-left: auto; cursor: pointer; width: 40px; }
 
-.glass-lens.jelly-tap {
-    animation: jellyPress 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-@keyframes jellyPress {
-    0% { transform: scale(1); }
-    40% { transform: scale(0.92); }
-    70% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
+.window { position: absolute; top: 5%; left: 5%; width: 90%; height: 90%; background: white; border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 50; overflow: hidden; }
+.win-header { height: 50px; background: #f0f0f0; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #ddd; font-weight: bold; }
+.back-btn { font-size: 26px; color: #333; cursor: pointer; }
+.win-title { flex: 1; text-align: center; }
+.close-btn { font-size: 24px; color: #555; cursor: pointer; }
+.win-content { flex: 1; overflow-y: auto; }
 
-.lens-content {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; justify-content: center; align-items: center;
-    transform: scale(1.8); transform-origin: center center; color: var(--active-color);
-}
-.lens-content svg { width: 24px; height: 24px; fill: currentColor; }
+.store-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+.store-card { border-radius: 12px; padding: 15px; color: white; position: relative; min-height: 140px; }
+.install-btn { position: absolute; right: 10px; top: 10px; background: white; color: #333; border: none; padding: 5px 10px; border-radius: 15px; font-weight: bold; cursor: pointer; }
 
-/* ================= 隐藏重叠元素 ================= */
-.nav-item.lens-hidden .nav-icon,
-.nav-item.lens-hidden span {
-    opacity: 0;
-    transition: opacity 0.15s ease;
-}
+.calc-body { padding: 10px; background: #222; flex: 1; display: flex; flex-direction: column; }
+.calc-display { background: #000; color: white; font-size: 50px; text-align: right; padding: 20px; margin-bottom: 10px; border-radius: 10px; }
+.calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex: 1; }
+.calc-btn { font-size: 24px; border: none; border-radius: 10px; cursor: pointer; background: #444; color: white; }
+.calc-btn.orange { background: #ff9500; }
+.calc-btn.gray { background: #a5a5a5; color: black; }
 
-/* 弹窗通用 */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.25); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 999; }
-.modal-overlay.active { display: flex; }
-@keyframes popIn { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-.modal-glass { border-radius: 32px; display: flex; flex-direction: column; padding: 20px; position: relative; width: 85%; max-width: 350px; transform: scale(0); opacity: 0; }
-.modal-overlay.active .modal-glass { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.modal-big { height: 60vh; max-height: 500px; }
-.modal-small { height: 30vh; max-height: 280px; }
-.modal-download-list { height: 50vh; max-height: 450px; }
-.modal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 18px; margin-bottom: 15px; }
-.modal-close { background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; padding: 0 5px; }
-.message-list { flex: 1; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
-.msg-item, .download-item { padding: 12px 15px; border-radius: 20px; font-size: 14px; }
-.download-list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 5px; }
-.download-item { font-size: 15px; font-weight: 500; text-align: center; }
-.fab-button, .check-button { position: absolute; bottom: -20px; right: -20px; width: 56px; height: 56px; border-radius: 50%; background: var(--active-color); color: #fff; border: 1px solid rgba(255,255,255,0.5); font-size: 28px; box-shadow: 0 6px 16px rgba(0,0,0,0.15); cursor: pointer; display: flex; justify-content: center; align-items: center; }
-.fab-button:active, .check-button:active { transform: scale(0.9); }
-.modal-input { width: 100%; flex: 1; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; color: var(--text-main); font-size: 16px; resize: none; outline: none; margin-bottom: 15px; }
+.clock-content { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #333; }
+.clock-time { font-size: 80px; font-weight: 200; }
+.cal-content { padding: 30px; text-align: center; }
+
+.browser-header { padding: 10px; display: flex; gap: 10px; background: #ddd; }
+.browser-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #aaa; }
+.browser-iframe { flex: 1; width: 100%; border: none; }
+
+.settings-layout { display: flex; height: 100%; }
+.settings-menu { width: 40%; background: #f0f0f0; border-right: 1px solid #ddd; padding: 10px; }
+.menu-item { padding: 15px; cursor: pointer; }
+.menu-item.active { background: #ddd; }
+.settings-content { flex: 1; padding: 20px; }
+.wallpaper-thumb { height: 100px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; border: 3px solid transparent; }
+
+#music-window { background: #ce1f3e; color: white; }
+.music-list { padding: 10px; }
+.song-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.music-controls { padding: 15px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: space-around; font-size: 30px; }
+
+#weather-window { background: #0b70c5; color: white; }
+.weather-content { padding: 20px; text-align: center; }
+.weather-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 30px; }
+.weather-item { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; }
+
+#file-window { background: white; }
+.file-layout { display: flex; height: 100%; }
+.file-side { width: 30%; border-right: 1px solid #ddd; padding: 10px; }
+.file-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+.file-main { flex: 1; padding: 20px; }
+
+.installer-box { height: 300px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+.progress-bar { width: 80%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; margin-top: 20px; display: none; }
+.progress-fill { width: 0%; height: 100%; background: #0078d7; }
+
+.feedback-input { width: 100%; height: 150px; padding: 15px; margin: 20px 0; border-radius: 8px; border: 1px solid #ccc; }
+.feedback-btn { width: 100%; padding: 15px; background: #0078d7; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
+.news-card { padding: 20px; border-bottom: 1px solid #eee; }
+
+#bili-window { background: #fb7299; }
+#bili-header { background: #fb7299; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+#bili-nav { background: white; display: flex; justify-content: space-around; padding: 15px; color: #fb7299; font-weight: bold; border-bottom: 2px solid #fb7299; }
+.video-card { display: flex; gap: 10px; background: white; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+.video-thumb { width: 140px; height: 80px; border-radius: 8px; background: #ddd; background-size: cover; }
+.video-title { font-weight: bold; color: black; }
+.video-stats { color: #888; font-size: 13px; }
+
+/* 播放器：只保留红按钮，居中 */
+#player-window { position: absolute; top: 10%; left: 5%; width: 90%; height: 80%; background: black; display: none; flex-direction: column; z-index: 200; }
+#player-header { width: 100%; height: 60px; background: #333; display: flex; justify-content: center; align-items: center; border-bottom: 2px solid #f00; }
+#player-force-close { background: #f00; color: white; font-size: 22px; font-weight: bold; padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; }
+#player-video { width: 100%; height: 100%; object-fit: contain; }

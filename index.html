@@ -3,61 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>orzyOS官网</title>
+    <title>OrzyOS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container" id="appContainer">
-        <div class="glass-top-bar">
-            <div class="top-bar-title">orzy OS</div>
-            <div class="top-bar-sub">轻量车机</div>
-        </div>
 
-        <div class="main-content" id="mainContent">
-            <div class="circle-button" id="circleBtn">
-                <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v12M8 13l4 4 4-4"/>
-                    <path d="M4 19h16" />
-                </svg>
-            </div>
-        </div>
+    <div id="boot-screen"><div class="boot-loader"></div><div class="boot-text">OrzyOS 正在启动...</div></div>
 
-        <!-- 底部导航 -->
-        <div class="glass-navbar" id="glassNavbar">
-            <div class="glass-lens" id="glassLens"></div>
-            
-            <div class="nav-item active" id="navHome">
-                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg></div>
-                <span>首页</span>
+    <div id="desktop">
+        <div id="icon-area"></div>
+        <!-- 底部任务栏：根据打开的窗口动态生成 -->
+        <div id="taskbar"></div>
+    </div>
+
+    <!-- 应用商店 -->
+    <div class="window" id="store-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('store-window')">←</span><span class="win-title">应用商店</span><span class="close-btn" onclick="closeWindow('store-window')">✕</span></div>
+        <div class="win-content store-grid" id="store-grid"></div>
+    </div>
+
+    <!-- 设置 -->
+    <div class="window" id="settings-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('settings-window')">←</span><span class="win-title">设置</span><span class="close-btn" onclick="closeWindow('settings-window')">✕</span></div>
+        <div class="settings-layout">
+            <div class="settings-menu" id="settings-menu">
+                <div class="menu-item active" onclick="showSetting('personal')">个性化</div>
+                <div class="menu-item" onclick="showSetting('display')">显示</div>
+                <div class="menu-item" onclick="showSetting('sound')">声音</div>
+                <div class="menu-item" onclick="showSetting('network')">网络</div>
+                <div class="menu-item" onclick="showSetting('about')">关于</div>
             </div>
-            <div class="nav-item" id="navDownload">
-                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
-                <span>下载</span>
-            </div>
-            <div class="nav-item" id="navMessage">
-                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
-                <span>消息</span>
-            </div>
-            <div class="nav-item" id="navTheme">
-                <div class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></div>
-                <span id="themeLabel">深色</span>
+            <div class="settings-content" id="settings-detail"></div>
+        </div>
+    </div>
+
+    <!-- 哔哩哔哩 -->
+    <div class="window" id="bili-window">
+        <div id="bili-header">
+            <span style="font-size:20px; font-weight:bold;">bilibili</span>
+            <span class="close-btn" style="color:white;" onclick="closeWindow('bili-window')">✕</span>
+        </div>
+        <div id="bili-nav">
+            <span onclick="loadBiliVideos('home')" style="color:#fb7299; cursor:pointer;">主页</span>
+            <span onclick="loadBiliVideos('precious')" style="cursor:pointer;">入站必刷</span>
+            <span onclick="loadBiliVideos('hot')" style="cursor:pointer;">热搜</span>
+        </div>
+        <!-- 提示信息 -->
+        <div id="bili-status" style="background:#eee; color:#d33; font-size:14px; font-weight:bold; text-align:center; padding:5px; display:none;">刷新失败，已显示备份视频</div>
+        <div id="bili-list" style="flex:1; overflow-y:auto; background:white;"></div>
+    </div>
+
+    <!-- 网易云 -->
+    <div class="window" id="music-window">
+        <div class="win-header" style="background:transparent; border:none; color:white;"><span class="back-btn" style="color:white;" onclick="closeWindow('music-window')">←</span><span>网易云音乐</span><span class="close-btn" style="color:white;" onclick="closeWindow('music-window')">✕</span></div>
+        <div class="music-list">
+            <div class="song-item"><strong>1 精卫</strong><br><span style="font-size:12px;">30年前，50年后</span></div>
+            <div class="song-item"><strong>2 谢天谢帝</strong><br><span style="font-size:12px;">诺米么 Lodmemo</span></div>
+        </div>
+        <div class="music-controls"><span>⏮</span><span onclick="toggleMusic()" id="play-icon">⏸</span><span>⏭</span></div>
+        <audio id="bg-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+    </div>
+
+    <!-- 天气 -->
+    <div class="window" id="weather-window">
+        <div class="win-header" style="background:transparent; border:none; color:white;"><span class="back-btn" style="color:white;" onclick="closeWindow('weather-window')">←</span><span>天气</span><span class="close-btn" style="color:white;" onclick="closeWindow('weather-window')">✕</span></div>
+        <div class="weather-content">
+            <h2>Changsha</h2>
+            <div style="font-size:80px;">🌤️ 19°</div><p>阴，多云</p>
+            <div class="weather-grid">
+                <div class="weather-item">最高<br><b>19°</b></div><div class="weather-item">体感<br><b>19°</b></div><div class="weather-item">湿度<br><b>66%</b></div>
+                <div class="weather-item">风速<br><b>1 m/s</b></div><div class="weather-item">日出<br><b>05:45</b></div><div class="weather-item">日落<br><b>19:03</b></div>
             </div>
         </div>
     </div>
 
-    <!-- 弹窗结构 -->
-    <div class="modal-overlay" id="messageModal">
-        <div class="modal-glass modal-big">
-            <div class="modal-header"><span>社区消息</span><button class="modal-close" id="closeMessageModal">✕</button></div>
-            <div class="message-list" id="messageList"><div class="msg-item">欢迎来到 orzyOS 社区！</div><div class="msg-item">社区不可用</div></div>
-            <button class="fab-button" id="openInputModal">+</button>
+    <!-- 文件管理器 -->
+    <div class="window" id="file-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('file-window')">←</span><span>文件管理器</span><span class="close-btn" onclick="closeWindow('file-window')">✕</span></div>
+        <div class="file-layout">
+            <div class="file-side"><div class="file-item">💻 OS(C:)</div><div class="file-item">💾 DATA(D:)</div></div>
+            <div class="file-main"><div style="border-bottom:1px solid #eee; padding-bottom:10px;">/C:/</div><div class="file-item">📁 Program_Data</div><div class="file-item">📁 system</div><div class="file-item">📁 user</div></div>
         </div>
     </div>
-    <div class="modal-overlay" id="inputModal">
-        <div class="modal-glass modal-small"><div class="modal-header"><span>输入留言</span></div><textarea class="modal-input" id="msgInput" placeholder="说点什么吧..."></textarea><button class="check-button" id="confirmMsg">✓</button></div>
+
+    <!-- 浏览器 -->
+    <div class="window" id="browser-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('browser-window')">←</span><span>浏览器</span><span class="close-btn" onclick="closeWindow('browser-window')">✕</span></div>
+        <div class="browser-header"><input type="text" class="browser-input" id="browser-input" placeholder="输入网址，如: baidu.com"><button onclick="loadWebsite()" style="padding:5px 15px;">访问</button></div>
+        <iframe class="browser-iframe" id="browser-frame" src="https://www.baidu.com"></iframe>
     </div>
-    <div class="modal-overlay" id="downloadModal">
-        <div class="modal-glass modal-download-list"><div class="modal-header"><span>软件更新</span><button class="modal-close" id="closeDownloadModal">✕</button></div><div class="download-list-container" id="downloadList"></div></div>
+
+    <!-- 安装程序 -->
+    <div class="window" id="installer-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('installer-window')">←</span><span>应用安装程序</span><span class="close-btn" onclick="closeWindow('installer-window')">✕</span></div>
+        <div class="win-content">
+            <div class="installer-box"><div style="font-size:60px; margin-bottom:20px;">📦</div><div>选取应用包</div><button class="feedback-btn" onclick="startInstall()" style="margin-top:20px;">开始安装</button><div class="progress-bar" id="install-progress"><div class="progress-fill" id="install-bar"></div></div></div>
+        </div>
+    </div>
+
+    <!-- 计算器 -->
+    <div class="window" id="calc-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('calc-window')">←</span><span>计算器</span><span class="close-btn" onclick="closeWindow('calc-window')">✕</span></div>
+        <div class="calc-body">
+            <div class="calc-display" id="calc-disp">0</div>
+            <div class="calc-grid">
+                <button class="calc-btn gray" onclick="calcInput('C')">C</button><button class="calc-btn gray" onclick="calcInput('%')">%</button><button class="calc-btn gray" onclick="calcInput('±')">±</button><button class="calc-btn orange" onclick="calcInput('/')">÷</button>
+                <button class="calc-btn" onclick="calcInput('7')">7</button><button class="calc-btn" onclick="calcInput('8')">8</button><button class="calc-btn" onclick="calcInput('9')">9</button><button class="calc-btn orange" onclick="calcInput('*')">×</button>
+                <button class="calc-btn" onclick="calcInput('4')">4</button><button class="calc-btn" onclick="calcInput('5')">5</button><button class="calc-btn" onclick="calcInput('6')">6</button><button class="calc-btn orange" onclick="calcInput('-')">−</button>
+                <button class="calc-btn" onclick="calcInput('1')">1</button><button class="calc-btn" onclick="calcInput('2')">2</button><button class="calc-btn" onclick="calcInput('3')">3</button><button class="calc-btn orange" onclick="calcInput('+')">+</button>
+                <button class="calc-btn" style="grid-column: span 2;" onclick="calcInput('0')">0</button><button class="calc-btn" onclick="calcInput('.')">.</button><button class="calc-btn orange" onclick="calcResult()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 时钟 -->
+    <div class="window" id="clock-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('clock-window')">←</span><span>时钟</span><span class="close-btn" onclick="closeWindow('clock-window')">✕</span></div>
+        <div class="clock-content"><div class="clock-time" id="clock-time">00:00:00</div><div class="clock-date" id="clock-date"></div></div>
+    </div>
+
+    <!-- 日历 -->
+    <div class="window" id="cal-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('cal-window')">←</span><span>日历</span><span class="close-btn" onclick="closeWindow('cal-window')">✕</span></div>
+        <div class="cal-content" id="cal-content"></div>
+    </div>
+
+    <!-- 反馈 -->
+    <div class="window" id="fb-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('fb-window')">←</span><span>反馈</span><span class="close-btn" onclick="closeWindow('fb-window')">✕</span></div>
+        <div class="win-content"><h3>请告诉我们您的建议</h3><textarea class="feedback-input" id="fb-text" placeholder="请输入您的意见..."></textarea><button class="feedback-btn" onclick="submitFeedback()">提交反馈</button></div>
+    </div>
+
+    <!-- 资讯 -->
+    <div class="window" id="news-window">
+        <div class="win-header"><span class="back-btn" onclick="closeWindow('news-window')">←</span><span>资讯</span><span class="close-btn" onclick="closeWindow('news-window')">✕</span></div>
+        <div class="win-content"><div class="news-card"><h3>OrzyOS 发布！</h3><p>网页虚拟机技术取得突破。</p></div><div class="news-card"><h3>今日新闻</h3><p>纯前端模拟系统上线。</p></div></div>
+    </div>
+
+    <!-- B站视频播放器（只有红按钮） -->
+    <div id="player-window">
+        <div id="player-header">
+            <button id="player-force-close" onclick="closePlayer()">✕ 关闭视频</button>
+        </div>
+        <video id="player-video" controls autoplay></video>
     </div>
 
     <script src="script.js"></script>
